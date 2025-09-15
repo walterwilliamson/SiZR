@@ -26,11 +26,7 @@ fitting <- function(sim_result, k = 20, method = "REML", family = gaussian(),
   df <- sim_result$df
   f_X <- sim_result$f_X
 
-  if (fit == "bam") {
-    fit_func <- function(...) mgcv::bam(...)
-  } else {
-    fit_func <- function(...) mgcv::gam(...)
-  }
+  fit_func <- if(fit == "bam") mgcv::bam else mgcv::gam
 
   if (model == "SiZR"){
     fit <- fit_func(Y ~ s(X, by=Lmat,k=k), method=method, family=family, data=df)
