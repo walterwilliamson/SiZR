@@ -10,7 +10,8 @@ make_data(
   s2_e = numeric(),
   seed = integer(),
   p_X = function(j) runif(j, 0, 1),
-  f_X = function(x) x
+  f_X = function(x) x,
+  family = c("gaussian", "binomial", "poisson")
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ make_data(
 \item{p_X}{Function to generate the covariates X. Default is uniform distribution on (0, 1).}
 
 \item{f_X}{Coefficient function defining the association between X and Y. Default is the identity function.}
+
+\item{family}{Family of the outcome variable. Options are "gaussian", "binomial", or "poisson". Default is "gaussian".}
 }
 \value{
 A list containing: data frame with simulated data and the coefficient function f_X.
