@@ -2,6 +2,7 @@
 
 export(extract_coef)
 export(fitting)
+export(make_data)
 export(plot_coef)
 export(sim_data)
 import(dplyr)

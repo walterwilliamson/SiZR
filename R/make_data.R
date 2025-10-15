@@ -1,14 +1,18 @@
 #' Wrangle data for fitting in SiZR model
 #'
+
 #'
-#'  @param data A data frame containing the outcome variable and covariates.
-#'  @param shape A character string specifying the shape of the data. Options are "long" or "wide".
-#'  @param predictor A character string specifying the type of predictor. Options are "functional" or "non-functional".
-#'  @param Lmat An optional matrix of weights for the functional predictor. If NULL, equal weights will be used.
+#' @param data
+#'  A data frame containing the outcome variable and covariates.
+#' @param shape
+#'  A character string specifying the shape of the data. Options are "long" or "wide".
+#' @param predictor
+#'  A character string specifying the type of predictor. Options are "functional" or "non-functional".
+#' @param Lmat
+#'  An optional matrix of weights for the functional predictor. If NULL, equal weights will be used.
 #'
-#'  @return A data frame formatted for SiZR model fitting.
-#'  @export
-#'
+#' @return A data frame formatted for SiZR model fitting.
+#' @export
 #'
 
 make_data <- function(data,
