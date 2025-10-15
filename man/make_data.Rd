@@ -2,42 +2,27 @@
 % Please edit documentation in R/make_data.R
 \name{make_data}
 \alias{make_data}
-\title{Simulate data for SiZR model}
+\title{Wrangle data for fitting in SiZR model}
 \usage{
 make_data(
-  N = integer(),
-  J = integer(),
-  s2_e = numeric(),
-  seed = integer(),
-  p_X = function(j) runif(j, 0, 1),
-  f_X = function(x) x,
-  family = c("gaussian", "binomial", "poisson")
+  data,
+  shape = c("long", "wide"),
+  predictor = c("functional", "non-functional"),
+  Lmat = NULL
 )
 }
 \arguments{
-\item{N}{Sample size (number of subjects).}
+\item{data}{A data frame containing the outcome variable and covariates.}
 
-\item{J}{Number of covariates.}
+\item{shape}{A character string specifying the shape of the data. Options are "long" or "wide".}
 
-\item{s2_e}{Variance of the residual error term.}
+\item{predictor}{A character string specifying the type of predictor. Options are "functional" or "non-functional".}
 
-\item{seed}{Random seed for reproducibility.}
-
-\item{p_X}{Function to generate the covariates X. Default is uniform distribution on (0, 1).}
-
-\item{f_X}{Coefficient function defining the association between X and Y. Default is the identity function.}
-
-\item{family}{Family of the outcome variable. Options are "gaussian", "binomial", or "poisson". Default is "gaussian".}
+\item{Lmat}{An optional matrix of weights for the functional predictor. If NULL, equal weights will be used.}
 }
 \value{
-A list containing: data frame with simulated data and the coefficient function f_X.
+A data frame formatted for SiZR model fitting.
 }
 \description{
-Simulate data for SiZR model
-}
-\examples{
-# Simulate data with default parameters
-sim_data <- make_data(N = 100, J = 5, s2_e = 1, seed = 123)
-head(sim_data$df)
-
+Wrangle data for fitting in SiZR model
 }

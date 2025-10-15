@@ -2,6 +2,7 @@
 #'
 #' @param coef_df Data frame containing coefficient estimates and confidence bands.
 #' @param f_X True coefficient function for comparison.
+#' @param results Results object from model fitting
 #'
 #' @return A ggplot object showing the coefficient estimates, confidence bands, and true function.
 #' @import ggplot2
@@ -11,7 +12,7 @@
 #' # Plot data
 
 
-plot_coef <- function(coef_df, f_X) {
+plot_coef <- function(results, coef_df, f_X) {
 
   a <- data.frame(x = coef_df$xind, y = f_X(coef_df$xind))
 

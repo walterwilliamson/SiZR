@@ -1,56 +1,67 @@
-#' Simulate data for SiZR model
+#' Wrangle data for fitting in SiZR model
 #'
-#' @param N Sample size (number of subjects).
-#' @param J Number of covariates.
-#' @param s2_e Variance of the residual error term.
-#' @param seed Random seed for reproducibility.
-#' @param p_X Function to generate the covariates X. Default is uniform distribution on (0, 1).
-#' @param f_X Coefficient function defining the association between X and Y. Default is the identity function.
-#' @param family Family of the outcome variable. Options are "gaussian", "binomial", or "poisson". Default is "gaussian".
 #'
-#' @return A list containing: data frame with simulated data and the coefficient function f_X.
-#' @export
+#'  @param data A data frame containing the outcome variable and covariates.
+#'  @param shape A character string specifying the shape of the data. Options are "long" or "wide".
+#'  @param predictor A character string specifying the type of predictor. Options are "functional" or "non-functional".
+#'  @param Lmat An optional matrix of weights for the functional predictor. If NULL, equal weights will be used.
 #'
-#' @examples
-#' # Simulate data with default parameters
-#' sim_data <- make_data(N = 100, J = 5, s2_e = 1, seed = 123)
-#' head(sim_data$df)
+#'  @return A data frame formatted for SiZR model fitting.
+#'  @export
 #'
-#' @importFrom stats gaussian rnorm runif rbinom rpois
 #'
 
-make_data <- function(N = integer(), J = integer(), s2_e = numeric(), seed = integer(),
-                      p_X = function(j) runif(j, 0, 1), f_X = function(x) x,
-                      family = c("gaussian", "binomial", "poisson")) {
-  # Set seed
-  set.seed(seed)
-  family <- match.arg(family)
+make_data <- function(data,
+                      shape = c("long", "wide"),
+                      predictor = c("functional", "non-functional"),
+                      Lmat = NULL){
 
-  # Simulate the data
-  # Features
-  X <- t(vapply(1:N, function(x,j) p_X(j), j=J, numeric(J)))
+  shape <- match.arg(shape)
+  predictor <- match.arg(predictor)
 
-  # Outcomes
-  eta <- apply(X, 1, function(x, f) mean(f(x)), f=f_X)
-
-  if (family == "gaussian"){
-    Y <- eta + rnorm(N, 0, sqrt(s2_e))
+  if(anyNA(data)){
+    warning("Input data contains missing values.")
   }
 
-  if (family == "poisson"){
-    lambda <- exp(eta)
-    Y <- rpois(N, lambda=lambda)
+
+  if (shape == "wide"){
+    return(data)
   }
 
-  if (family == "binomial"){
-    expit <- function(x) 1/(1+exp(-x))
-    p <- expit(eta)
-    Y <- rbinom(N, size=1, prob=p)
+  if (shape == "long") {
+    # Assumes 'Y' is the response and remaining columns are predictors
+    if (predictor == "non-functional") {
+      # In non-functional case, no need to expand anything
+      return(data)
+
+    } else if (predictor == "functional") {
+      # 'X' should be a list-column of length-J numeric vectors
+      if (!"X" %in% names(data)) {
+        stop("Data must have a column named 'X' containing functional predictors.")
+      }
+
+      J <- length(data$X[[1]])
+      n <- nrow(data)
+
+      if (is.null(Lmat)) {
+        Lmat <- matrix(1/J, nrow = n, ncol = J)
+      } else {
+        # Validate user-provided Lmat
+        if (!is.matrix(Lmat) || nrow(Lmat) != n || ncol(Lmat) != J) {
+          stop("Lmat must be a matrix with dimensions n x J (rows = observations, cols = time points).")
+        }
+      }
+
+      colnames(Lmat) <- paste0("L", 1:J)
+      Lmat_df <- as.data.frame(Lmat)
+
+      # Convert list-column X into a wide format data frame
+      Xmat <- do.call(rbind, data$X)
+      colnames(Xmat) <- paste0("X", 1:J)
+      X_df <- as.data.frame(Xmat)
+
+      new_data <- cbind(data["Y"], X_df, Lmat_df)
+      return(new_data)
+    }
   }
-
-  Lmat <- matrix(1/J, N, J)
-  df <- data.frame(Y=Y, X=I(X), Lmat=I(Lmat))
-  df$Xbar <- rowMeans(X)
-
-  return(list(df = df, f_X = f_X))
 }

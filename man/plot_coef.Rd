@@ -4,9 +4,11 @@
 \alias{plot_coef}
 \title{Plot Coefficient Estimates with Confidence Bands}
 \usage{
-plot_coef(coef_df, f_X)
+plot_coef(results, coef_df, f_X)
 }
 \arguments{
+\item{results}{Results object from model fitting}
+
 \item{coef_df}{Data frame containing coefficient estimates and confidence bands.}
 
 \item{f_X}{True coefficient function for comparison.}
