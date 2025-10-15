@@ -10,8 +10,7 @@ fitting(
   method = "REML",
   family = gaussian(),
   fit = "gam",
-  model = "SiZR",
-  data_type = c("wide", "long")
+  model = "SiZR"
 )
 }
 \arguments{
@@ -26,8 +25,6 @@ fitting(
 \item{fit}{Type of fitting function to use. Options are "gam" (default) or "bam".}
 
 \item{model}{Type of model to fit. Options are "SiZR" (default) or "mean".}
-
-\item{data_type}{Type of data format. Options are "wide" (default) or "long".}
 }
 \value{
 A fitted model object.
@@ -37,7 +34,7 @@ Fit a model to the simulated data
 }
 \examples{
 # Simulate data
-sim_data <- make_data(N = 100, J = 5, s2_e = 1, seed = 123)
+sim_data <- sim_data(N = 100, J = 5, s2_e = 1, seed = 123)
 # Fit SiZR model
 fit_SiZR <- fitting(sim_data, model = "SiZR")
 }

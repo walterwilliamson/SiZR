@@ -1,35 +1,25 @@
 ---
-output: github_document
+title: "SiZR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SiZR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+  comment = "#>"
 )
 ```
 
-# SiZR
-
-<!-- badges: start -->
-<!-- badges: end -->
-
-The goal of SiZR is to ...
-
-## Installation
-
-You can install the development version of SiZR from [GitHub](https://github.com/) with:
-
-```{r, eval = FALSE} 
-# install.packages("devtools")
-devtools::install_github("walterwilliamson/SiZR")
+```{r setup}
+# Loading SiZR package functions
+devtools::load_all()
 ```
 
-## Example: Simulating and Fitting Models with SiZR
+## Simulating and Fitting Models with SiZR
 This vignette demonstrates how to use the SiZR package to simulate data, fit models, extract results, and visualize the outcomes. We use a simple example with gaussia data to demonstrate the workflow.
 
 ### 1. Simulating data
@@ -37,9 +27,6 @@ This vignette demonstrates how to use the SiZR package to simulate data, fit mod
 We start by simulating a dataset using the `sim_data` function. We define a true function for the predictor `X` and generate data accordingly. In addition to the arguments shown below, you can also specify the function used to generate covariate values using `p_X`.
 
 ```{r simulate}
-library(devtools)
-load_all()
-
 # Define the true function for X
 f_X = function(x) sin(2 * pi * x)
 
@@ -81,5 +68,6 @@ plot_coef(SiZR_fit ,SiZR_results, f_X)
 
 plot_coef(mean_fit, mean_results, f_X)
 ```
+
 
 

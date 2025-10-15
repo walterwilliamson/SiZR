@@ -6,7 +6,7 @@
 #' @param family Family object specifying the error distribution and link function. Default is gaussian().
 #' @param fit Type of fitting function to use. Options are "gam" (default) or "bam".
 #' @param model Type of model to fit. Options are "SiZR" (default) or "mean".
-#' @param data_type Type of data format. Options are "wide" (default) or "long".
+#'
 #'
 #' @return A fitted model object.
 #' @export
@@ -15,13 +15,13 @@
 #'
 #' @examples
 #' # Simulate data
-#' sim_data <- make_data(N = 100, J = 5, s2_e = 1, seed = 123)
+#' sim_data <- sim_data(N = 100, J = 5, s2_e = 1, seed = 123)
 #' # Fit SiZR model
 #' fit_SiZR <- fitting(sim_data, model = "SiZR")
 
 
 fitting <- function(sim_result, k = 20, method = "REML", family = gaussian(),
-                    fit = "gam", model = "SiZR", data_type = c("wide", "long")){
+                    fit = "gam", model = "SiZR"){
 
   df <- sim_result$df
   f_X <- sim_result$f_X

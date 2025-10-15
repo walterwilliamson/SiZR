@@ -19,11 +19,85 @@ You can install the development version of SiZR from
 devtools::install_github("walterwilliamson/SiZR")
 ```
 
-## Example
+## Example: Simulating and Fitting Models with SiZR
 
-This is a basic example which shows you how to solve a common problem:
+This vignette demonstrates how to use the SiZR package to simulate data,
+fit models, extract results, and visualize the outcomes. We use a simple
+example with gaussia data to demonstrate the workflow.
+
+### 1. Simulating data
+
+We start by simulating a dataset using the `sim_data` function. We
+define a true function for the predictor `X` and generate data
+accordingly. In addition to the arguments shown below, you can also
+specify the function used to generate covariate values using `p_X`.
 
 ``` r
-library(SiZR)
-## basic example code
+library(devtools)
+#> Loading required package: usethis
+load_all()
+#> ℹ Loading SiZR
+
+# Define the true function for X
+f_X = function(x) sin(2 * pi * x)
+
+# Generate simulated data
+dat <- sim_data(N = 750, # number of observations
+                J = 2,  # number of predictors
+                s2_e = 1, # variance of the error term
+                seed  = 2814,
+                family = "gaussian",
+                f_X = f_X)
 ```
+
+### 2. Fitting model
+
+To demonstrate the fitting process, we will fit both the SiZR model and
+a simple mean model to the simulated data, using the model argument to
+specify which model to fit, and the family argument to specify the
+distribution of the response variable (based on the simulated data). The
+function also allows the ability to choose fitting with `gam()` or
+`bam()` from the `mgcv` package using the `fit` argument, or choose the
+likelihood estimation methods (“REML” or “ML”) using the `method`
+argument.
+
+``` r
+SiZR_fit <- fitting(dat, family = gaussian(), model = "SiZR")
+
+mean_fit <- fitting(dat, family = gaussian(), model = "mean")
+```
+
+### 3. Extracting model results
+
+After fitting the models, we extract their estimated coefficients and
+associated standard errors and confidence intervals across a specified
+domain using the `extract_coef()` function. You can specify the width of
+the confidence interval using the `conf_level` argument.
+
+``` r
+SiZR_results <- extract_coef(SiZR_fit, type = "SiZR", xind = seq(0, 1, len = 21))
+
+mean_results <- extract_coef(mean_fit, type = "mean", xind = seq(0, 1, len = 21))
+```
+
+### 4. Visualizing Results
+
+Finally, we visualize the estimated coefficients along with their
+confidence intervals using the `plot_coef()` function. Here we compare
+the results from the SiZR model and the mean model. The `plot_coef()`
+function takes the fitted model object, the extracted results, and the
+true function as arguments, and returns a visualization of the model
+fit, paired with the true function.
+
+``` r
+plot_coef(SiZR_fit ,SiZR_results, f_X)
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+
+``` r
+
+plot_coef(mean_fit, mean_results, f_X)
+```
+
+<img src="man/figures/README-unnamed-chunk-5-2.png" width="100%" />
