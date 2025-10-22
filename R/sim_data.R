@@ -7,6 +7,7 @@
 #' @param p_X Function to generate the covariates X. Default is uniform distribution on (0, 1).
 #' @param f_X Coefficient function defining the association between X and Y. Default is the identity function.
 #' @param family Family of the outcome variable. Options are "gaussian", "binomial", or "poisson". Default is "gaussian".
+#' @param method Determines method of data generation. Options are "SiZR" (default) and "mean"
 #'
 #' @return A list containing: data frame with simulated data and the coefficient function f_X.
 #' @export
@@ -21,7 +22,8 @@
 
 sim_data <- function(N = integer(), J = integer(), s2_e = numeric(), seed = integer(),
                       p_X = function(j) runif(j, 0, 1), f_X = function(x) x,
-                      family = c("gaussian", "binomial", "poisson")) {
+                      family = c("gaussian", "binomial", "poisson"),
+                     method = "SiZR") {
   # Set seed
   set.seed(seed)
   family <- match.arg(family)
@@ -31,7 +33,14 @@ sim_data <- function(N = integer(), J = integer(), s2_e = numeric(), seed = inte
   X <- t(vapply(1:N, function(x,j) p_X(j), j=J, numeric(J)))
 
   # Outcomes
-  eta <- apply(X, 1, function(x, f) mean(f(x)), f = f_X)
+  if(method == "SiZR"){
+    eta <- apply(X, 1, function(x, f) mean(f(x)), f = f_X)
+  }
+
+  if(method == "mean"){
+    eta <- apply(X, 1, function(x, f) f(mean(x)), f = f_X)
+  }
+
 
   if (family == "gaussian"){
     Y <- eta + rnorm(N, 0, sqrt(s2_e))

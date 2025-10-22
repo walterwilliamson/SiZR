@@ -11,7 +11,8 @@ sim_data(
   seed = integer(),
   p_X = function(j) runif(j, 0, 1),
   f_X = function(x) x,
-  family = c("gaussian", "binomial", "poisson")
+  family = c("gaussian", "binomial", "poisson"),
+  method = "SiZR"
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ sim_data(
 \item{f_X}{Coefficient function defining the association between X and Y. Default is the identity function.}
 
 \item{family}{Family of the outcome variable. Options are "gaussian", "binomial", or "poisson". Default is "gaussian".}
+
+\item{method}{Determines method of data generation. Options are "SiZR" (default) and "mean"}
 }
 \value{
 A list containing: data frame with simulated data and the coefficient function f_X.
